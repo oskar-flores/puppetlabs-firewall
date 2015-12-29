@@ -25,6 +25,7 @@ class firewall::linux::redhat (
   if ($::operatingsystem != 'Amazon')
   and (($::operatingsystem != 'Fedora' and versioncmp($::operatingsystemrelease, '7.0') >= 0)
   or  ($::operatingsystem == 'Fedora' and versioncmp($::operatingsystemrelease, '15') >= 0)) {
+    notify { 'check firewwalld..': } ->
     service { 'firewalld':
       ensure => stopped,
       enable => false,
@@ -32,7 +33,8 @@ class firewall::linux::redhat (
     }
   }
 
-  if $package_name {
+  if  $package_name {
+    notify { '$package_name': } ->
     package { $package_name:
       ensure => present,
       before => Service[$service_name],
